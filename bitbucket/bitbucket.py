@@ -29,6 +29,7 @@ from .deploy_key import DeployKey
 URLS = {
     'BASE': 'https://bitbucket.org/!api/1.0/%s',
     'BASE_V2': 'https://bitbucket.org/!api/2.0/%s',
+    'BASE_APIv2': 'https://api.bitbucket.org/2.0/%s',
     # Get user profile and repos
     'GET_USER': 'users/%(username)s/',
     'GET_USER_PRIVILEGES': 'user/privileges',
@@ -227,8 +228,23 @@ class Bitbucket(object):
             auth=auth,
             params=params,
             data=kwargs)
+        return self._dispatch(r)
+    
+    def dispatch_v2(self, method, url, auth=None, params=None, data=None):
+        """ The original dispatch breaks when you use data params that already exist 
+        in the function- i.e. "url"
+        """
+        r = Request(
+            method=method,
+            url=url,
+            auth=auth,
+            params=params,
+            data=data)
+        return self._dispatch(r)
+    
+    def _dispatch(self, request):
         s = Session()
-        resp = s.send(r.prepare())
+        resp = s.send(request.prepare())
         status = resp.status_code
         content = resp.content  # Includes binary
 
@@ -249,8 +265,9 @@ class Bitbucket(object):
                 'Unauthorized access, '
                 'please check your credentials.')
         elif status >= 400 and status < 500:
-            import pdb; pdb.set_trace()
-            return (False, 'Service not found.')
+            print json.dumps(request.data, indent=2)
+            return (False, "Service not found (%s to %s): %s " % (request.method, request.url, content))
+        
         elif status >= 500 and status < 600:
                 return (False, 'Server error.')
         else:
@@ -265,6 +282,11 @@ class Bitbucket(object):
         """ Construct and return the URL for a specific API service. """
         # TODO : should be static method ?
         return self.URLS['BASE_V2'] % self.URLS[action] % kwargs
+    
+    def url_apiv2(self, action, **kwargs):
+        """ Construct and return the URL for a specific API service. """
+        # TODO : should be static method ?
+        return self.URLS['BASE_APIv2'] % self.URLS[action] % kwargs
 
     #  =====================
     #  = General functions =
