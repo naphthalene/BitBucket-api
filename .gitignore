@@ -1,6 +1,7 @@
 env/
 dist/
 *.pyc
+*egg-info
 MANIFEST
 bitbucket/tests/private/settings.py
 
@@ -16,3 +17,6 @@ build/
 
 # Ignore doc generated files
 docs/_build/
+
+# Ignore virtual environments
+venv
