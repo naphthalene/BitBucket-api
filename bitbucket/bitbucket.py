@@ -265,7 +265,7 @@ class Bitbucket(object):
                 'Unauthorized access, '
                 'please check your credentials.')
         elif status >= 400 and status < 500:
-            print json.dumps(request.data, indent=2)
+            #print json.dumps(request.data, indent=2)
             return (False, "Service not found (%s to %s): %s " % (request.method, request.url, content))
         
         elif status >= 500 and status < 600:
