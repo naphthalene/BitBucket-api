@@ -233,14 +233,26 @@ class Bitbucket(object):
     def dispatch_v2(self, method, url, auth=None, params=None, data=None):
         """ The original dispatch breaks when you use data params that already exist 
         in the function- i.e. "url"
+        it also gets all pages of a request
         """
-        r = Request(
-            method=method,
-            url=url,
-            auth=auth,
-            params=params,
-            data=data)
-        return self._dispatch(r)
+        ret = None
+        while True:
+            r = Request(
+                method=method,
+                url=url,
+                auth=auth,
+                params=params,
+                data=data)
+            success, result = self._dispatch(r)
+            if not success:
+                return (success, result)
+            if ret == None:
+                ret = result
+            elif 'values' in ret and 'values' in result:
+                ret['values'] += result['values']
+            if 'next' not in result:
+                return (success, ret)
+            url = result['next']
     
     def _dispatch(self, request):
         s = Session()

@@ -44,7 +44,7 @@ class PullRequest(object):
         owner = owner or self.bitbucket.username
         repo_slug = repo_slug or self.bitbucket.repo_slug or ''
         url = self.bitbucket.url_v2('GET_PULLREQUESTS', username=owner, repo_slug=repo_slug)
-        return self.bitbucket.dispatch('GET', url, auth=self.bitbucket.auth, params=params)
+        return self.bitbucket.dispatch_v2('GET', url, auth=self.bitbucket.auth, params=params)
 
     def get(self, pullrequest_id, repo_slug=None, owner=None):
         """ Get a PullRequest from one of your repositories.
