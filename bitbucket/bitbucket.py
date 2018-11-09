@@ -27,8 +27,8 @@ from .deploy_key import DeployKey
 #  = URLs =
 #  ========
 URLS = {
-    'BASE': 'https://bitbucket.org/!api/1.0/%s',
-    'BASE_V2': 'https://bitbucket.org/!api/2.0/%s',
+    'BASE': 'https://api.bitbucket.org/1.0/%s',
+    'BASE_V2': 'https://api.bitbucket.org/2.0/%s',
     'BASE_APIv2': 'https://api.bitbucket.org/2.0/%s',
     # Get user profile and repos
     'GET_USER': 'users/%(username)s/',
